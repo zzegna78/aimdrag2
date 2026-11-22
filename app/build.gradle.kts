@@ -7,10 +7,10 @@ android {
     compileSdk = 34
     defaultConfig {
         applicationId = "ai.venice.aimdrag"
-        minSdk = 24
+        minSdk = 30
         targetSdk = 34
-        versionCode = 1
-        versionName = "1.0"
+        versionCode = 2
+        versionName = "2.0"
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_17
@@ -18,4 +18,8 @@ android {
     }
     kotlinOptions { jvmTarget = "17" }
 }
-dependencies { implementation("androidx.core:core-ktx:1.13.1") }
+dependencies {
+    implementation("androidx.core:core-ktx:1.13.1")
+    implementation("dev.rikka.shizuku:api:13.1.5")
+    implementation("dev.rikka.shizuku:provider:13.1.5")
+}
