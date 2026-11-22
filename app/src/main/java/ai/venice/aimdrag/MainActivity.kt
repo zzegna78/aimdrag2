@@ -23,13 +23,9 @@ class MainActivity : Activity() {
             setPadding(dp(20), dp(28), dp(20), dp(28))
         }
 
+        root.addView(TextView(this).apply { text = "AimDrag"; textSize = 24f })
         root.addView(TextView(this).apply {
-            text = "AimDrag"
-            textSize = 24f
-        })
-
-        root.addView(TextView(this).apply {
-            text = "Направляющие HUD и ассист драга для Free Fire. Работает поверх игры, клиент не меняется."
+            text = "Площадка драга поверх игры. Призрачный тач уходит на реальную кнопку огня, чувствительность умножается."
             textSize = 13f
             setPadding(0, dp(10), 0, dp(18))
         })
@@ -37,17 +33,27 @@ class MainActivity : Activity() {
         status = TextView(this).apply { textSize = 13f }
         root.addView(status)
 
-        root.addView(button("Открыть спец. возможности") {
-            startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS))
+        root.addView(Button(this).apply {
+            text = "Открыть спец. возможности"
+            setOnClickListener { startActivity(Intent(Settings.ACTION_ACCESSIBILITY_SETTINGS)) }
         })
 
         root.addView(toggle("Показывать направляющие", "guides", true))
-        root.addView(toggle("Ассист драга (перехват)", "assist", false))
+        root.addView(toggle("Ассист драга", "assist", false))
+        root.addView(toggle("Живой режим (без задержки)", "live", false))
         root.addView(slider("Множитель драга", "mult", 1.0f, 3.0f, 2.0f))
         root.addView(slider("Размер кнопки огня, % ширины", "fire_pct", 18f, 34f, 24f))
 
+        root.addView(Button(this).apply {
+            text = "Сбросить позицию площадки"
+            setOnClickListener {
+                prefs.edit().remove("pad_x").remove("pad_y").apply()
+                Toast.makeText(this@MainActivity, "Позиция сброшена", Toast.LENGTH_SHORT).show()
+            }
+        })
+
         root.addView(TextView(this).apply {
-            text = "Включи службу AimDrag в списке спец. возможностей, затем запусти Free Fire. Ассист ловит только зону кнопки огня — джойстик и остальной HUD работают как обычно."
+            text = "Красный круг с крестом — куда бьёт призрачный тач, совмести его с кнопкой огня в HUD. Синий прямоугольник — площадка, держи палец на нём и веди вверх. Долгое нажатие на площадке — перетащить её."
             textSize = 12f
             setPadding(0, dp(18), 0, 0)
         })
@@ -64,16 +70,11 @@ class MainActivity : Activity() {
         status.setTextColor(if (enabled) 0xFF22C55E.toInt() else 0xFFEF4444.toInt())
     }
 
-    private fun button(label: String, action: () -> Unit) = Button(this).apply {
-        text = label
-        setOnClickListener { action() }
-    }
-
     private fun toggle(label: String, key: String, def: Boolean): ViewGroup {
         val row = LinearLayout(this).apply {
             orientation = LinearLayout.HORIZONTAL
             gravity = Gravity.CENTER_VERTICAL
-            setPadding(0, dp(10), 0, dp(4))
+            setPadding(0, dp(12), 0, dp(4))
         }
         row.addView(TextView(this).apply {
             text = label
@@ -106,7 +107,7 @@ class MainActivity : Activity() {
                 override fun onStopTrackingTouch(sb: SeekBar?) {}
             })
         })
-        box.setPadding(0, dp(10), 0, 0)
+        box.setPadding(0, dp(12), 0, 0)
         return box
     }
 
